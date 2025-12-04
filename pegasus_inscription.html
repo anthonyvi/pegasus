@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pegasus Bank - Inscription</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: #0c0c0c;
+      font-family: 'Cinzel', serif;
+      color: #f8e7b9;
+    }
+
+    .header {
+      text-align: center;
+      padding: 40px 0 20px;
+      background: #0c0c0c;
+    }
+
+    .header img {
+      width: 110px;
+      filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.4));
+    }
+
+    .header h1 {
+      margin-top: 10px;
+      font-size: 2.6em;
+      letter-spacing: 3px;
+      color: #d4af37;
+      text-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 40px auto;
+      background: rgba(20, 20, 20, 0.85);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: 20px;
+      padding: 35px;
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+      backdrop-filter: blur(6px);
+    }
+
+    h2 {
+      text-align: center;
+      color: #d4af37;
+      font-size: 1.8em;
+      margin-bottom: 25px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+    }
+
+    label {
+      font-size: 0.9em;
+      color: #f8e7b9;
+      display: block;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      margin-bottom: 18px;
+      font-size: 1em;
+      font-family: 'Cinzel', serif;
+    }
+
+    input {
+      background: #1a1a1a;
+      border: 1px solid #4b4b4b;
+      color: #f8e7b9;
+    }
+
+    input:focus {
+      outline: none;
+      border: 1px solid #d4af37;
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+    }
+
+    button {
+      background: linear-gradient(135deg, #c49b2d, #d4af37);
+      color: black;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+      transition: 0.3s;
+      font-weight: bold;
+    }
+
+    button:hover {
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.7);
+      transform: scale(1.02);
+    }
+
+    .success { 
+      color: #2ecc71; 
+      text-align: center; 
+      margin-top: 10px;
+      font-size: 0.95em;
+    }
+    
+    .error { 
+      color: #e74c3c; 
+      text-align: center; 
+      margin-top: 10px;
+      font-size: 0.95em;
+    }
+
+    .link-text {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9em;
+      color: #f8e7b9;
+    }
+
+    .link-text a {
+      color: #d4af37;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .link-text a:hover {
+      text-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <img src="pegasus-logo.png" alt="Logo Pegasus Bank" />
+    <h1>PEGASUS BANK</h1>
+  </div>
+
+  <div class="container">
+    <h2>Inscription</h2>
+    
+    <form id="registerForm">
+      <label>Nom :</label>
+      <input type="text" id="nom" placeholder="Dupont" required>
+
+      <label>Prénom :</label>
+      <input type="text" id="prenom" placeholder="Jean" required>
+
+      <label>Pseudo :</label>
+      <input type="text" id="pseudo" placeholder="Anthony" required>
+
+      <label>Mot de passe :</label>
+      <input type="password" id="password" placeholder="••••••••" required>
+
+      <label>Confirmer le mot de passe :</label>
+      <input type="password" id="confirmPassword" placeholder="••••••••" required>
+
+      <button type="submit">Créer mon compte</button>
+      <div id="registerMsg"></div>
+    </form>
+
+    <div class="link-text">
+      Déjà membre ? <a href="pegasus_luxe.html">Se connecter</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      
+      const nom = document.getElementById("nom").value;
+      const prenom = document.getElementById("prenom").value;
+      const pseudo = document.getElementById("pseudo").value;
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+      const msgDiv = document.getElementById("registerMsg");
+
+      if (password !== confirmPassword) {
+        msgDiv.innerHTML = "<div class='error'>Les mots de passe ne correspondent pas</div>";
+        return;
+      }
+
+      if (password.length < 6) {
+        msgDiv.innerHTML = "<div class='error'>Le mot de passe doit contenir au moins 6 caractères</div>";
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem('pegasusUsers') || '[]');
+      if (users.find(u => u.pseudo === pseudo)) {
+        msgDiv.innerHTML = "<div class='error'>Ce pseudo est déjà utilisé</div>";
+        return;
+      }
+
+      const accountNumber = "MC" + Math.floor(Math.random() * 10000000000000000).toString().padStart(16, '0');
+      const cardNumber = "4" + Math.floor(Math.random() * 1000000000000000).toString().padStart(15, '0');
+      const cardExpiry = "12/" + (new Date().getFullYear() + 3);
+      const cardCVV = Math.floor(100 + Math.random() * 900);
+      const balance = Math.floor(1000 + Math.random() * 99000);
+
+      const userData = {
+        nom,
+        prenom,
+        pseudo,
+        password,
+        accountNumber,
+        cardNumber,
+        cardExpiry,
+        cardCVV,
+        balance
+      };
+
+      users.push(userData);
+      localStorage.setItem('pegasusUsers', JSON.stringify(users));
+      localStorage.setItem('currentUser', JSON.stringify(userData));
+
+      msgDiv.innerHTML = "<div class='success'>Compte créé avec succès ! Redirection...</div>";
+      
+      setTimeout(() => {
+        window.location.href = "pegasus_compte.html";
+      }, 1500);
+    });
+  </script>
+</body>
+</html>

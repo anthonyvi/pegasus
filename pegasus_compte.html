@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pegasus Bank - Mon Compte</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: #0c0c0c;
+      font-family: 'Cinzel', serif;
+      color: #f8e7b9;
+    }
+
+    .header {
+      text-align: center;
+      padding: 40px 0 20px;
+      background: #0c0c0c;
+    }
+
+    .header img {
+      width: 110px;
+      filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.4));
+    }
+
+    .header h1 {
+      margin-top: 10px;
+      font-size: 2.6em;
+      letter-spacing: 3px;
+      color: #d4af37;
+      text-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 40px auto;
+      background: rgba(20, 20, 20, 0.85);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: 20px;
+      padding: 35px;
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+      backdrop-filter: blur(6px);
+    }
+
+    .balance {
+      background: linear-gradient(145deg, #171717, #0e0e0e);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 20px;
+      box-shadow: inset 0 0 12px rgba(212,175,55,0.15);
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      color: #d4af37;
+      font-size: 1.8em;
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+    }
+
+    .info-line {
+      margin: 10px 0;
+      font-size: 1em;
+    }
+
+    .info-label {
+      color: #d4af37;
+      font-weight: bold;
+    }
+
+    .card-section {
+      margin-top: 15px;
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid rgba(212,175,55,0.3);
+      background: linear-gradient(145deg, #262626, #1a1a1a);
+    }
+
+    h3 {
+      color: #d4af37;
+      margin-top: 25px;
+      font-size: 1.4em;
+      letter-spacing: 1px;
+    }
+
+    label {
+      font-size: 0.9em;
+      color: #f8e7b9;
+      display: block;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      margin-bottom: 18px;
+      font-size: 1em;
+      font-family: 'Cinzel', serif;
+    }
+
+    input {
+      background: #1a1a1a;
+      border: 1px solid #4b4b4b;
+      color: #f8e7b9;
+    }
+
+    input:focus {
+      outline: none;
+      border: 1px solid #d4af37;
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+    }
+
+    button {
+      background: linear-gradient(135deg, #c49b2d, #d4af37);
+      color: black;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+      transition: 0.3s;
+      font-weight: bold;
+    }
+
+    button:hover {
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.7);
+      transform: scale(1.02);
+    }
+
+    .success { 
+      color: #2ecc71; 
+      text-align: center; 
+      margin-top: 10px;
+    }
+    
+    .error { 
+      color: #e74c3c; 
+      text-align: center; 
+      margin-top: 10px;
+    }
+
+    .logout-btn {
+      margin-top: 30px;
+      background: linear-gradient(135deg, #8b0000, #a52a2a);
+    }
+
+    .logout-btn:hover {
+      box-shadow: 0 0 20px rgba(139, 0, 0, 0.7);
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 40px;
+      color: #d4af37;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <img src="pegasus-logo.png" alt="Logo Pegasus Bank" />
+    <h1>PEGASUS BANK</h1>
+  </div>
+
+  <div class="container" id="mainContainer">
+    <!-- Le contenu sera chargé ici -->
+  </div>
+
+  <script>
+    let currentBalance = 0;
+    let currentUser = null;
+
+    window.onload = () => {
+      try {
+        const userStr = localStorage.getItem('currentUser');
+        
+        if (!userStr) {
+          showNoData();
+          return;
+        }
+
+        currentUser = JSON.parse(userStr);
+        currentBalance = currentUser.balance || 0;
+
+        displayAccount();
+      } catch (error) {
+        console.error('Erreur:', error);
+        showNoData();
+      }
+    };
+
+    function showNoData() {
+      document.getElementById("mainContainer").innerHTML = `
+        <div class="no-data">
+          <h2>Aucune donnée de compte</h2>
+          <p>Veuillez vous connecter ou vous inscrire</p>
+          <button onclick="window.location.href='pegasus_inscription.html'">Créer un compte</button>
+          <br><br>
+          <button onclick="window.location.href='pegasus_luxe.html'">Se connecter</button>
+        </div>
+      `;
+    }
+
+    function displayAccount() {
+      document.getElementById("mainContainer").innerHTML = `
+        <div class="balance">
+          <h2>Bienvenue ${currentUser.prenom} 👋</h2>
+
+          <div class="info-line">
+            <span class="info-label">Solde :</span>
+            <span id="balance">${currentBalance.toLocaleString()}</span> €
+          </div>
+
+          <div class="info-line">
+            <span class="info-label">IBAN :</span>
+            <span id="accountNumber">${currentUser.accountNumber}</span>
+          </div>
+
+          <div class="card-section">
+            <div class="info-line">
+              <span class="info-label">Carte Visa :</span>
+              <span id="cardNumber">${currentUser.cardNumber}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span id="cardExpiry">${currentUser.cardExpiry}</span>
+              <span>CVV: <span id="cardCVV">${currentUser.cardCVV}</span></span>
+            </div>
+          </div>
+        </div>
+
+        <h3>Transfert PayPal</h3>
+        <form id="paypalForm">
+          <label>Email du destinataire :</label>
+          <input type="email" id="paypalEmail" placeholder="destinataire@email.com" required>
+
+          <label>Montant (€) :</label>
+          <input type="number" id="amount" min="1" placeholder="100" required>
+
+          <button type="submit">Envoyer</button>
+        </form>
+
+        <div id="paypalMsg"></div>
+
+        <button class="logout-btn" onclick="logout()">Se déconnecter</button>
+      `;
+
+      document.getElementById("paypalForm").addEventListener("submit", handleTransfer);
+    }
+
+    function handleTransfer(e) {
+      e.preventDefault();
+
+      const amount = Number(document.getElementById("amount").value);
+      const paypalMsg = document.getElementById("paypalMsg");
+
+      if (amount > currentBalance) {
+        paypalMsg.innerHTML = "<div class='error'>Solde insuffisant</div>";
+        return;
+      }
+
+      currentBalance -= amount;
+      document.getElementById("balance").textContent = currentBalance.toLocaleString();
+
+      currentUser.balance = currentBalance;
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+      paypalMsg.innerHTML = `<div class='success'>Transfert de ${amount}€ effectué !</div>`;
+      document.getElementById("paypalForm").reset();
+
+      setTimeout(() => {
+        paypalMsg.innerHTML = "";
+      }, 3000);
+    }
+
+    function logout() {
+      if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
+        localStorage.removeItem('currentUser');
+        window.location.href = "pegasus_luxe.html";
+      }
+    }
+  </script>
+</body>
+</html>
